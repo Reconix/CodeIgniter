@@ -125,7 +125,7 @@ page after they log in, you may find this example useful::
 	passed to ``Auth::login()``.
 
 For those of you who don't know regular expressions and want to learn
-more about them, `regular-expressions.info <http://www.regular-expressions.info/>`_
+more about them, `regular-expressions.info <https://www.regular-expressions.info/>`_
 might be a good starting point.
 
 .. note:: You can also mix and match wildcards with regular expressions.
@@ -205,6 +205,3 @@ underscores in the controller and method URI segments, thus saving you
 additional route entries if you need to do that.
 This is required, because the dash isn't a valid class or method name
 character and would cause a fatal error if you try to use it.
-
-.. important:: The reserved routes must come before any wildcard or
-	regular expression routes.

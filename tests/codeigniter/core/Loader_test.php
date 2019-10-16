@@ -99,7 +99,7 @@ class Loader_test extends CI_TestCase {
 		// Test reloading
 		unset($this->ci_obj->$name);
 		$this->assertInstanceOf('CI_Loader', $this->load->library($lib));
-		$this->assertObjectNotHasAttribute($name, $this->ci_obj);
+		$this->assertObjectHasAttribute($name, $this->ci_obj);
 
 		// Create baseless library
 		$name = 'ext_baseless_lib';
@@ -269,6 +269,25 @@ class Loader_test extends CI_TestCase {
 
 	// --------------------------------------------------------------------
 
+	public function test_invalid_model()
+	{
+		$this->ci_set_core_class('model', 'CI_Model');
+
+		// Create model in VFS
+		$model = 'Unit_test_invalid_model';
+		$content = '<?php class '.$model.' {} ';
+		$this->ci_vfs_create($model, $content, $this->ci_app_root, 'models');
+
+		// Test no extending
+		$this->setExpectedException(
+			'RuntimeException',
+			'Class '.$model.' doesn\'t extend CI_Model'
+		);
+		$this->load->model($model);
+	}
+
+	// --------------------------------------------------------------------
+
 	// public function testDatabase()
 	// {
 	// 	$this->assertInstanceOf('CI_Loader', $this->load->database());
@@ -295,8 +314,10 @@ class Loader_test extends CI_TestCase {
 		$output->expects($this->once())->method('append_output')->with($content.$value);
 		$this->ci_instance_var('output', $output);
 
-		// Test view output
-		$this->assertInstanceOf('CI_Loader', $this->load->view($view, array($var => $value)));
+		// Test view output and $vars as an object
+		$vars = new stdClass();
+		$vars->$var = $value;
+		$this->assertInstanceOf('CI_Loader', $this->load->view($view, $vars));
 	}
 
 	// --------------------------------------------------------------------
@@ -542,7 +563,7 @@ class Loader_test extends CI_TestCase {
 		$dir = 'testdir';
 		$path = APPPATH.$dir.'/';
 		$model = 'Automod';
-		$this->ci_vfs_create($model, '<?php class '.$model.' { }', $this->ci_app_root, array($dir, 'models'));
+		$this->ci_vfs_create($model, '<?php class '.$model.' extends CI_Model { }', $this->ci_app_root, array($dir, 'models'));
 
 		// Create autoloader config
 		$cfg = array(
