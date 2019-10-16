@@ -88,7 +88,7 @@ $config['language']	= 'english';
 | This determines which character set is used by default in various methods
 | that require a character set to be provided.
 |
-| See http://php.net/htmlspecialchars for a list of supported charsets.
+| See https://secure.php.net/htmlspecialchars for a list of supported charsets.
 |
 */
 $config['charset'] = 'UTF-8';
@@ -133,7 +133,7 @@ $config['subclass_prefix'] = 'MY_';
 |
 |	$config['composer_autoload'] = '/path/to/vendor/autoload.php';
 |
-| For more information about Composer, please visit http://getcomposer.org/
+| For more information about Composer, please visit https://getcomposer.org/
 |
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
@@ -221,7 +221,7 @@ $config['log_threshold'] = 0;
 |--------------------------------------------------------------------------
 |
 | Leave this BLANK unless you would like to set something other than the default
-| application/logs/ directory. Use a full server path with trailing slash.
+| application/logs/ directory. Use a full server path.
 |
 */
 $config['log_path'] = '';
@@ -269,7 +269,7 @@ $config['log_date_format'] = 'Y-m-d H:i:s';
 |--------------------------------------------------------------------------
 |
 | Leave this BLANK unless you would like to set something other than the default
-| application/views/errors/ directory.  Use a full server path with trailing slash.
+| application/views/errors/ directory.  Use a full server path.
 |
 */
 $config['error_views_path'] = '';
@@ -280,7 +280,7 @@ $config['error_views_path'] = '';
 |--------------------------------------------------------------------------
 |
 | Leave this BLANK unless you would like to set something other than the default
-| application/cache/ directory.  Use a full server path with trailing slash.
+| application/cache/ directory.  Use a full server path.
 |
 */
 $config['cache_path'] = '';

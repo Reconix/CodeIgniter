@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
+ * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@
  * @package	CodeIgniter
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
+ * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
  * @filesource
@@ -134,7 +134,7 @@ if ( ! function_exists('load_class'))
 	 *
 	 * @param	string	the class name being requested
 	 * @param	string	the directory where the class should be found
-	 * @param	string	an optional argument to pass to the class constructor
+	 * @param	mixed	an optional argument to pass to the class constructor
 	 * @return	object
 	 */
 	function &load_class($class, $directory = 'libraries', $param = NULL)
@@ -318,17 +318,13 @@ if ( ! function_exists('get_mimes'))
 
 		if (empty($_mimes))
 		{
+			$_mimes = file_exists(APPPATH.'config/mimes.php')
+				? include(APPPATH.'config/mimes.php')
+				: array();
+
 			if (file_exists(APPPATH.'config/'.ENVIRONMENT.'/mimes.php'))
 			{
-				$_mimes = include(APPPATH.'config/'.ENVIRONMENT.'/mimes.php');
-			}
-			elseif (file_exists(APPPATH.'config/mimes.php'))
-			{
-				$_mimes = include(APPPATH.'config/mimes.php');
-			}
-			else
-			{
-				$_mimes = array();
+				$_mimes = array_merge($_mimes, include(APPPATH.'config/'.ENVIRONMENT.'/mimes.php'));
 			}
 		}
 
@@ -502,6 +498,7 @@ if ( ! function_exists('set_status_header'))
 			$stati = array(
 				100	=> 'Continue',
 				101	=> 'Switching Protocols',
+				103	=> 'Early Hints',
 
 				200	=> 'OK',
 				201	=> 'Created',
@@ -510,6 +507,7 @@ if ( ! function_exists('set_status_header'))
 				204	=> 'No Content',
 				205	=> 'Reset Content',
 				206	=> 'Partial Content',
+				207	=> 'Multi-Status',
 
 				300	=> 'Multiple Choices',
 				301	=> 'Moved Permanently',
@@ -518,6 +516,7 @@ if ( ! function_exists('set_status_header'))
 				304	=> 'Not Modified',
 				305	=> 'Use Proxy',
 				307	=> 'Temporary Redirect',
+				308	=> 'Permanent Redirect',
 
 				400	=> 'Bad Request',
 				401	=> 'Unauthorized',
@@ -537,11 +536,13 @@ if ( ! function_exists('set_status_header'))
 				415	=> 'Unsupported Media Type',
 				416	=> 'Requested Range Not Satisfiable',
 				417	=> 'Expectation Failed',
+				421	=> 'Misdirected Request',
 				422	=> 'Unprocessable Entity',
 				426	=> 'Upgrade Required',
 				428	=> 'Precondition Required',
 				429	=> 'Too Many Requests',
 				431	=> 'Request Header Fields Too Large',
+				451	=> 'Unavailable For Legal Reasons',
 
 				500	=> 'Internal Server Error',
 				501	=> 'Not Implemented',
@@ -565,12 +566,12 @@ if ( ! function_exists('set_status_header'))
 		if (strpos(PHP_SAPI, 'cgi') === 0)
 		{
 			header('Status: '.$code.' '.$text, TRUE);
+			return;
 		}
-		else
-		{
-			$server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
-			header($server_protocol.' '.$code.' '.$text, TRUE, $code);
-		}
+
+		$server_protocol = (isset($_SERVER['SERVER_PROTOCOL']) && in_array($_SERVER['SERVER_PROTOCOL'], array('HTTP/1.0', 'HTTP/1.1', 'HTTP/2'), TRUE))
+			? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
+		header($server_protocol.' '.$code.' '.$text, TRUE, $code);
 	}
 }
 
@@ -628,7 +629,7 @@ if ( ! function_exists('_error_handler'))
 
 		// If the error is fatal, the execution of the script should be stopped because
 		// errors can't be recovered from. Halting the script conforms with PHP's
-		// default error handling. See http://www.php.net/manual/en/errorfunc.constants.php
+		// default error handling. See https://secure.php.net/manual/en/errorfunc.constants.php
 		if ($is_error)
 		{
 			exit(1); // EXIT_ERROR
@@ -718,6 +719,7 @@ if ( ! function_exists('remove_invisible_characters'))
 		{
 			$non_displayables[] = '/%0[0-8bcef]/i';	// url encoded 00-08, 11, 12, 14, 15
 			$non_displayables[] = '/%1[0-9a-f]/i';	// url encoded 16-31
+			$non_displayables[] = '/%7f/i';	// url encoded 127
 		}
 
 		$non_displayables[] = '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S';	// 00-08, 11, 12, 14-31, 127
