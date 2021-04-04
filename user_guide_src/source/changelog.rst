@@ -37,7 +37,7 @@ Release Date: Not Released
 
    -  Removed previously deprecated *Cart Library*.
    -  Removed previously deprecated *Javascript Library* (it was always experimental in the first place).
-   -  Added UNIX socket connection support to :doc:`Session Library <libraries/sessions>` 'redis' driver.
+   -  Added TLS and UNIX socket connection support to :doc:`Session Library <libraries/sessions>` 'redis' driver.
    -  Updated :doc:`ZIP Library <libraries/zip>` method ``read_dir()`` to include hidden (dot-prefixed) files.
 
    -  :doc:`Cache Library <libraries/caching>` changes include:
@@ -127,6 +127,7 @@ Release Date: Not Released
    -  :doc:`CAPTCHA Helper <helpers/captcha_helper>` changes include:
 
       - Added 'img_alt' option with a default value of 'captcha'.
+      - Added 'img_class' option.
       - Added ability to generate ``data:image/png;base64`` URIs instead of writing image files to disk.
       - Updated to always create PNG images instead of JPEG.
 
@@ -155,6 +156,8 @@ Bug fixes for 3.1.12
 -  Fixed a bug (#5901) - :doc:`Database Library <database/index>` methods ``list_fields()`` and ``field_data()`` ignored the configured table schema on PostgreSQL.
 -  Fixed a bug (#5906) - :doc:`Database Library <database/index>` 'postgre' driver couldn't use the failover feature without a ``$config['dsn']``.
 -  Fixed a bug (#5903) - :doc:`common function <general/common_functions>` :php:func:`set_status_header()` didn't recognize 'HTTP/2.0' as a valid ``$_SERVER['SERVER_PROTOCOL']``.
+-  Fixed a bug (#6013) - :doc:`Session <libraries/sessions>` flashdata didn't work on PHP 8.
+-  Fixed a bug (#6006) - ``is_callable()`` change in PHP 8 broke :doc:`Migrations <libraries/migrations>`, a part of :doc:`XML-RPC <libraries/xmlrpc>` and an edge case in 404 detection logic.
 
 Version 3.1.11
 ==============
